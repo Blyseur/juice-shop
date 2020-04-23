@@ -1,4 +1,4 @@
-name: Build uicy Shop Image
+name: Build Juicy Shop Image
 
 on:
     push:
@@ -18,3 +18,28 @@ jobs:
             registery : docker.io
             repository: blyseur/juicy
             tag_with_sha: true
+        #- uses: minchao/cfn-nag-action@master
+        #  with:
+        #    args: '--input-path CloudAwarenessLab/cf-all.yaml'
+            
+        - name: prepare-kustomize
+          run: |
+            sed -i "s#IMAGE_NAME#blyseur/juicy#g" kustomization.yaml
+            sed -i "s/IMAGE_TAG/sha-$(git rev-parse --short HEAD)/g" kustomization.yaml
+            
+        - name: deploy-to-aws
+          run: |
+            aws configure set default.region us-east-1
+            aws configure set default.output json
+            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws configure set aws_session_token ${{ secrets.AWS_SESSION_TOKEN }}
+            
+        - name: deploy-to-k8s
+          run: |
+            aws eks update-kubeconfig --name isen
+            kubectl kustomize . | kubectl apply -f -
+    
+        - name: deploy-to-aws
+          run: |
+            aws cloudformation deploy --template-file ecs-task.yaml --stack-name ecs-task --parameter-overrides ImageName=docker.io/blyseur/juicy:sha-$(git rev-parse --short HEAD) --no-fail-on-empty-changeset 
