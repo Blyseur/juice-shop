@@ -16,17 +16,6 @@ jobs:
  
     steps:
     - uses: actions/checkout@v2
-    - name: Install NPM dependencies
-      run: |
-        npm install --production --unsafe-perm
-    - uses: sburris/dependency-check-action@master
-      with:
-        Project-Name: JuiceShop
-    - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     - name: build-push
       uses: docker/build-push-action@v1
       with:
@@ -39,7 +28,6 @@ jobs:
       run: |
         sed -i "s#IMAGE_NAME#blyseur/juicy#g" kustomization.yaml
         sed -i "s/IMAGE_TAG/sha-$(git rev-parse --short HEAD)/g" kustomization.yaml
-        cat kustomization.yaml
     - name: configure-aws
       run: |
         aws configure set default.region $AWS_REGION
@@ -49,5 +37,5 @@ jobs:
         aws configure set aws_session_token ${{ secrets.AWS_SESSION_TOKEN }}
     - name: deploy-to-k8s
       run: |
-        aws eks update-kubeconfig --name isen
+        aws eks update-kubeconfig --name testcluster3
         kubectl kustomize . | kubectl apply -f -
