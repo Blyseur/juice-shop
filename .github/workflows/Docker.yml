@@ -42,4 +42,4 @@ jobs:
     
         - name: deploy-to-aws
           run: |
-            aws cloudformation deploy --template-file ecs-task.yaml --stack-name ecs-task --parameter-overrides ImageName=docker.io/blyseur/juicy:sha-$(git rev-parse --short HEAD) --no-fail-on-empty-changeset 
+            aws cloudformation deploy --template-file ecs-task.yaml --stack-name Juicy-Shop --parameter-overrides ImageName=docker.io/blyseur/juicy:sha-$(git rev-parse --short HEAD) --no-fail-on-empty-changeset 

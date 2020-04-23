@@ -12,7 +12,7 @@ Resources:
     Properties: 
       ContainerDefinitions: 
         - 
-          Name: "HelloWorld"
+          Name: "Juicy Shop"
           Image: 
             Ref: ImageName
           Cpu: "10"
