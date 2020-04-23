@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: juicy-deployment
+  name: webserver-deployment
   labels:
-    app: juicy
+    app: webserver
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: juicy
+      app: webserver
   template:
     metadata:
       labels:
-        app: juicy
+        app: webserver
     spec:
       containers:
-      - name: juicy
+      - name: webserver
         image: mywebserver:1.0
         imagePullPolicy: IfNotPresent
         ports:
@@ -24,10 +24,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: juicy-service
+  name: webserver-service
 spec:
   selector:
-    app: juicy
+    app: webserver
   ports:
     - port: 80
       targetPort: 3000

@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
   - deployment.yaml
 images:
-  - name: juicy
+  - name: mywebserver
     newName: IMAGE_NAME
     newTag: IMAGE_TAG
